@@ -217,6 +217,16 @@
           </a>
         </li>
       
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
 
       
     </ul>
@@ -236,6 +246,138 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/MIT6-824-Lab1-part2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lycco">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lycco">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/06/MIT6-824-Lab1-part2/" itemprop="url">MIT6.824 Lab1 part2</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-06T21:37:09+08:00">
+                2019-01-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/06/MIT6-824-Lab1-part2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/06/MIT6-824-Lab1-part2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>part2主要是实现<code>main/wc.go</code>中的<code>mapF()</code>和 <code>reduceF()</code>函数，具体来说<code>mapF()</code>是对文件内容进行分词，每个词频默认为1；然后在<code>reduceF()</code>中统计key对应的value个数</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">mapF</span><span class="params">(filename <span class="keyword">string</span>, contents <span class="keyword">string</span>)</span> []<span class="title">mapreduce</span>.<span class="title">KeyValue</span></span> &#123;</span><br><span class="line">	<span class="comment">// Your code here (Part II).</span></span><br><span class="line">	<span class="comment">//strings.FieldsFunc()按照传入的func来切割字符串，传入的func遍历传入字符串的每个rune，若返回true则略过，返回false则保留，连续保留的rune合并为一个字符串</span></span><br><span class="line">	words := strings.FieldsFunc(contents, <span class="function"><span class="keyword">func</span><span class="params">(r <span class="keyword">rune</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">		<span class="keyword">return</span> !unicode.IsLetter(r)</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">var</span> kvs []mapreduce.KeyValue</span><br><span class="line">	<span class="keyword">for</span> _, word := <span class="keyword">range</span> words &#123;</span><br><span class="line">		kvs = <span class="built_in">append</span>(kvs, mapreduce.KeyValue&#123;Key: word, Value: <span class="string">"1"</span>&#125;)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> kvs</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">reduceF</span><span class="params">(key <span class="keyword">string</span>, values []<span class="keyword">string</span>)</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="comment">// Your code here (Part II).</span></span><br><span class="line">	<span class="keyword">return</span> strconv.Itoa(<span class="built_in">len</span>(values))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -295,6 +437,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/05/MIT6-824-Lab1-part1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/05/MIT6-824-Lab1-part1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -327,7 +479,7 @@
 </ul>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">contents, err := ioutil.ReadFile(inFile)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	log.Printf(<span class="string">"read file %s failed"</span>, inFile)</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line">kvs := mapF(inFile, <span class="keyword">string</span>(contents))</span><br><span class="line">enconders := <span class="built_in">make</span>([]*json.Encoder, nReduce)</span><br><span class="line"><span class="keyword">for</span> reduceTaskNumber := <span class="number">0</span>; reduceTaskNumber &lt; nReduce; reduceTaskNumber++ &#123;</span><br><span class="line">	fileName := reduceName(jobName, mapTask, reduceTaskNumber)</span><br><span class="line">	filePtr, err := os.Create(fileName)</span><br><span class="line">	<span class="keyword">defer</span> filePtr.Close()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Printf(<span class="string">"can't create file %s"</span>, fileName)</span><br><span class="line">	&#125;</span><br><span class="line">	enconders[reduceTaskNumber] = json.NewEncoder(filePtr)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> _, kv := <span class="keyword">range</span> kvs &#123;</span><br><span class="line">	key := kv.Key</span><br><span class="line">	HashedKey := ihash(key) % nReduce</span><br><span class="line">	err := enconders[HashedKey].Encode(&amp;kv)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
-<li><code>doReduce()</code> 函数读取中间文件，读出<code>KeyValue</code>值后将相同key的value合并，这里可以使用map。然后按照key进行排序，对新的key-value使用 <code>reduceF()</code> 函数，即可得到例如 <code>hello, 2, word, 3</code> 的词频结果，写入新的merge文件，merge文件可由<code>mergeName()</code>得到名字</li>
+<li><code>doReduce()</code> 函数读取中间文件，读出<code>KeyValue</code>值后将相同key的value合并，这里可以使用map。然后按照key进行排序，对新的key-value使用 <code>reduceF()</code> 函数，即可得到例如 <code>hello: 2, word: 3</code> 的词频结果，写入新的merge文件，merge文件可由<code>mergeName()</code>得到名字</li>
 </ul>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">kvMap := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>][]<span class="keyword">string</span>)</span><br><span class="line"><span class="keyword">for</span> mapNumber := <span class="number">0</span>; mapNumber &lt; nMap; mapNumber++ &#123;</span><br><span class="line">	fileName := reduceName(jobName, mapNumber, reduceTask)</span><br><span class="line">	filePtr, err := os.Open(fileName)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Printf(<span class="string">"can't open file %s"</span>, fileName)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> filePtr.Close()</span><br><span class="line">	decoder := json.NewDecoder(filePtr)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">var</span> kv KeyValue</span><br><span class="line">		<span class="keyword">if</span> err := decoder.Decode(&amp;kv); err == io.EOF &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Fatal(err)</span><br><span class="line">		&#125;</span><br><span class="line">		kvMap[kv.Key] = <span class="built_in">append</span>(kvMap[kv.Key], kv.Value)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">keys := <span class="built_in">make</span>([]<span class="keyword">string</span>, <span class="number">0</span>, <span class="built_in">len</span>(kvMap))</span><br><span class="line"><span class="keyword">for</span> key := <span class="keyword">range</span> kvMap &#123;</span><br><span class="line">	keys = <span class="built_in">append</span>(keys, key)</span><br><span class="line">&#125;</span><br><span class="line">sort.Strings(keys)</span><br><span class="line">mergeFile, err := os.Create(mergeName(jobName, reduceTask))</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	log.Printf(<span class="string">"merge file %s can't open"</span>, mergeName(jobName, reduceTask))</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">defer</span> mergeFile.Close()</span><br><span class="line">enc := json.NewEncoder(mergeFile)</span><br><span class="line"><span class="keyword">for</span> _, k := <span class="keyword">range</span> keys &#123;</span><br><span class="line">	enc.Encode(KeyValue&#123;k, reduceF(k, kvMap[k])&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>最后在终端输入 <code>go test -run Sequential</code> 进行测试，如果出现</p>
@@ -425,6 +577,16 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/05/hello-world/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/05/hello-world/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -540,7 +702,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -548,6 +710,15 @@
 
           
 
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
           
 
         </nav>
@@ -699,6 +870,14 @@
 
   
 
+    
+      <script id="dsq-count-scr" src="https://mikarrors.disqus.com/count.js" async></script>
+    
+
+    
+
+  
+
 
 
 
@@ -711,10 +890,6 @@
   
 
 
-
-
-
-  
 
 
 
