@@ -260,12 +260,12 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/MIT6-824-Lab1-part2/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/07/MIT6-824-Lab1-part3-4-5/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lycco">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -279,7 +279,142 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/01/06/MIT6-824-Lab1-part2/" itemprop="url">MIT6.824 Lab1 part2</a></h1>
+                <a class="post-title-link" href="/2019/01/07/MIT6-824-Lab1-part3-4-5/" itemprop="url">MIT6.824 Lab1 Part3,4,5</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-07T13:09:50+08:00">
+                2019-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/07/MIT6-824-Lab1-part3-4-5/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/07/MIT6-824-Lab1-part3-4-5/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Part3"><a href="#Part3" class="headerlink" title="Part3"></a>Part3</h2><p>part3实现 <code>mapreduce/schedule.go</code>来对多个worker进行RPC调度。这里使用<code>sync.WaitGroup</code>等待goroutine完成</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> waitGroup sync.WaitGroup</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; ntasks; i++ &#123;</span><br><span class="line">	waitGroup.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">var</span> taskArgs DoTaskArgs</span><br><span class="line">	taskArgs.JobName = jobName</span><br><span class="line">	taskArgs.Phase = phase</span><br><span class="line">	taskArgs.TaskNumber = i</span><br><span class="line">	taskArgs.NumOtherPhase = n_other</span><br><span class="line">	<span class="keyword">if</span> phase == mapPhase &#123;</span><br><span class="line">		taskArgs.File = mapFiles[i]</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> waitGroup.Done()</span><br><span class="line">		worker := &lt;-registerChan</span><br><span class="line">		<span class="keyword">if</span> !call(worker, <span class="string">"Worker.DoTask"</span>, &amp;taskArgs, <span class="literal">nil</span>) &#123;</span><br><span class="line">			log.Fatal(<span class="string">"call RPC failed"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;registerChan &lt;- worker&#125;()</span><br><span class="line">	&#125;()</span><br><span class="line">&#125;</span><br><span class="line">waitGroup.Wait()</span><br></pre></td></tr></table></figure>
+<h2 id="Part4"><a href="#Part4" class="headerlink" title="Part4"></a>Part4</h2><p>part4考虑某个worker fails之后应当把任务交给另外的worker，加入<code>for</code>循环直至成功调用即可</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> waitGroup sync.WaitGroup</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; ntasks; i++ &#123;</span><br><span class="line">	waitGroup.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">var</span> taskArgs DoTaskArgs</span><br><span class="line">	taskArgs.JobName = jobName</span><br><span class="line">	taskArgs.Phase = phase</span><br><span class="line">	taskArgs.TaskNumber = i</span><br><span class="line">	taskArgs.NumOtherPhase = n_other</span><br><span class="line">	<span class="keyword">if</span> phase == mapPhase &#123;</span><br><span class="line">		taskArgs.File = mapFiles[i]</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> waitGroup.Done()</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			worker := &lt;-registerChan</span><br><span class="line">			<span class="keyword">if</span> call(worker, <span class="string">"Worker.DoTask"</span>, taskArgs, <span class="literal">nil</span>) &#123;</span><br><span class="line">				<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">					registerChan &lt;- worker</span><br><span class="line">				&#125;()</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line">&#125;</span><br><span class="line">waitGroup.Wait()</span><br></pre></td></tr></table></figure>
+<h2 id="Part5"><a href="#Part5" class="headerlink" title="Part5"></a>Part5</h2><p>part5与part2类似，实现<code>main/ii.go</code>中的<code>mapF()</code>和<code>reduceF()</code>，统计词在所有文件中出现的次数以及所在的文件，输出<code>word: num pg-xx.txt,pg-xxx.txt</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">mapF</span><span class="params">(document <span class="keyword">string</span>, value <span class="keyword">string</span>)</span> <span class="params">(res []mapreduce.KeyValue)</span></span> &#123;</span><br><span class="line">	<span class="comment">// Your code here (Part V).</span></span><br><span class="line">	words := strings.FieldsFunc(value, <span class="function"><span class="keyword">func</span><span class="params">(r <span class="keyword">rune</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">		<span class="keyword">return</span> !unicode.IsLetter(r)</span><br><span class="line">	&#125;)</span><br><span class="line">	DocMaps := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br><span class="line">	<span class="keyword">var</span> kv []mapreduce.KeyValue</span><br><span class="line">	<span class="keyword">for</span> _, word := <span class="keyword">range</span> words &#123;</span><br><span class="line">		DocMaps[word] = document</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> k, doc := <span class="keyword">range</span> DocMaps &#123;</span><br><span class="line">		kv = <span class="built_in">append</span>(kv, mapreduce.KeyValue&#123;Key: k, Value: doc&#125;)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> kv</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">reduceF</span><span class="params">(key <span class="keyword">string</span>, values []<span class="keyword">string</span>)</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="comment">// Your code here (Part V).</span></span><br><span class="line">	nDoc := <span class="built_in">len</span>(values)</span><br><span class="line">	sort.Strings(values)</span><br><span class="line">	resString := strconv.Itoa(nDoc) + <span class="string">" "</span></span><br><span class="line">	<span class="keyword">for</span> _, v := <span class="keyword">range</span> values &#123;</span><br><span class="line">		resString = resString + v + <span class="string">","</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> resString[:(<span class="built_in">len</span>(resString)<span class="number">-1</span>)]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/MIT6-824-Lab1-part2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lycco">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lycco">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/06/MIT6-824-Lab1-part2/" itemprop="url">MIT6.824 Lab1 Part2</a></h1>
         
 
         <div class="post-meta">
@@ -397,7 +532,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lycco">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -411,7 +546,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/01/05/MIT6-824-Lab1-part1/" itemprop="url">MIT6.824 Lab1 part1</a></h1>
+                <a class="post-title-link" href="/2019/01/05/MIT6-824-Lab1-part1/" itemprop="url">MIT6.824 Lab1 Part1</a></h1>
         
 
         <div class="post-meta">
@@ -538,7 +673,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lycco">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -691,7 +826,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="Lycco">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Lycco">
           <p class="site-author-name" itemprop="name">Lycco</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -702,7 +837,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
